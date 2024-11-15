@@ -17,6 +17,7 @@ class WelcomePage {
         this.updateDateTime();
         this.updateQuote();
         this.initEventListeners();
+        this.initButtons();
         
         // 每分钟更新时间
         setInterval(() => this.updateDateTime(), 60000);
@@ -66,6 +67,30 @@ class WelcomePage {
                     this.meditationBtn.querySelector('.meditation-label').textContent = '开始冥想';
                     window.zenSounds.stopMeditationSounds();
                 }
+            });
+        }
+    }
+
+    initButtons() {
+        // 获取按钮元素
+        const zenButton = document.querySelector('.zen-btn');
+        const motoButton = document.querySelector('.moto-btn');
+
+        // 添加禅境模式按钮点击事件
+        if (zenButton) {
+            zenButton.addEventListener('click', () => {
+                // 隐藏欢迎页面
+                document.querySelector('#welcome').classList.add('hidden');
+                // 显示禅境首页
+                document.querySelector('#zen-home').classList.remove('hidden');
+            });
+        }
+
+        // 添加机车模式按钮点击事件
+        if (motoButton) {
+            motoButton.addEventListener('click', () => {
+                // 跳转到机车模式页面
+                window.location.href = 'motormode/index.html';
             });
         }
     }

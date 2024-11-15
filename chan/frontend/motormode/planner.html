@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>人生规划</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/planner.css">
+    <script src="js/goals.js"></script>
+    <script src="js/planner.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="js/charts.js"></script>
+</head>
+<body>
+    <div class="page planner-page">
+        <!-- 顶部导航 -->
+        <header class="page-header">
+            <h1>人生规划</h1>
+            <button class="header-btn analysis-btn">
+                <span class="icon">✨</span>
+                <span>AI分析</span>
+            </button>
+        </header>
+
+        <!-- 时间轴切换 -->
+        <div class="timeline-tabs">
+            <button class="tab-btn active" data-tab="past">过往经历</button>
+            <button class="tab-btn" data-tab="present">当前状态</button>
+            <button class="tab-btn" data-tab="future">未来规划</button>
+        </div>
+
+        <!-- 过往经历部分 -->
+        <section class="timeline-section past-section" id="pastTimeline">
+            <div class="timeline-header">
+                <h2>人生轨迹</h2>
+                <button class="add-event-btn">添加经历</button>
+            </div>
+            
+            <div class="timeline-content">
+                <!-- 时间轴条目示例 -->
+                <div class="timeline-item">
+                    <div class="timeline-date">2022年5月</div>
+                    <div class="timeline-card">
+                        <div class="card-header">
+                            <h3>大学毕业</h3>
+                            <span class="tag education">教育</span>
+                        </div>
+                        <p class="card-description">计算机科学与技术专业</p>
+                        <div class="card-footer">
+                            <span class="location">📍 北京</span>
+                            <button class="edit-btn">编辑</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 当前状态部分 -->
+        <section class="timeline-section present-section hidden" id="presentStatus">
+            <div class="status-cards">
+                <div class="status-card">
+                    <h3>核心数据</h3>
+                    <div class="status-grid">
+                        <div class="status-item">
+                            <span class="status-label">当前职业</span>
+                            <span class="status-value">软件工程师</span>
+                        </div>
+                        <div class="status-item">
+                            <span class="status-label">工作年限</span>
+                            <span class="status-value">2年</span>
+                        </div>
+                        <div class="status-item">
+                            <span class="status-label">技能方向</span>
+                            <span class="status-value">前端开发</span>
+                        </div>
+                        <div class="status-item">
+                            <span class="status-label">目标行业</span>
+                            <span class="status-value">互联网</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="status-card">
+                    <h3>能力雷达</h3>
+                    <canvas id="skillsRadar"></canvas>
+                </div>
+
+                <div class="status-card">
+                    <h3>生活平衡</h3>
+                    <div class="balance-chart">
+                        <!-- 生活平衡图表将通过JS渲染 -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 未来规划部分 -->
+        <section class="timeline-section future-section hidden" id="futurePlans">
+            <div class="goals-header">
+                <h2>目标规划</h2>
+                <div class="view-controls">
+                    <button class="view-btn active" data-view="timeline">时间轴</button>
+                    <button class="view-btn" data-view="roadmap">路线图</button>
+                </div>
+            </div>
+
+            <div class="goals-container timeline-view">
+                <!-- 短期目标 -->
+                <div class="goals-group">
+                    <h3>短期目标 (1年内)</h3>
+                    <div class="goal-cards">
+                        <div class="goal-card">
+                            <div class="goal-progress">
+                                <svg viewBox="0 0 36 36">
+                                    <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
+                                    <path class="progress" stroke-dasharray="30, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
+                                </svg>
+                                <span class="percentage">30%</span>
+                            </div>
+                            <h4>技能提升</h4>
+                            <p>掌握React Native开发</p>
+                            <div class="goal-footer">
+                                <span class="deadline">截止: 2024/06</span>
+                                <button class="edit-btn">✎</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 中期目标 -->
+                <div class="goals-group">
+                    <h3>中期目标 (1-3年)</h3>
+                    <div class="goal-cards">
+                        <!-- 类似的目标卡片 -->
+                    </div>
+                </div>
+
+                <!-- 长期目标 -->
+                <div class="goals-group">
+                    <h3>长期目标 (3年以上)</h3>
+                    <div class="goal-cards">
+                        <!-- 类似的目标卡片 -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- 路线图视图 -->
+            <div class="goals-container roadmap-view hidden">
+                <div class="roadmap">
+                    <!-- 路线图将通过JS动态生成 -->
+                </div>
+            </div>
+        </section>
+
+        <!-- AI分析弹窗 -->
+        <div class="modal ai-analysis-modal hidden">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>AI 人生分析</h3>
+                    <button class="closeBtn">×</button>
+                </div>
+                <div class="modal-body">
+                    <div class="analysis-section">
+                        <h4>过往总结</h4>
+                        <p class="analysis-text">根据您的经历，您展现出强烈的技术倾向和持续学习能力...</p>
+                    </div>
+                    <div class="analysis-section">
+                        <h4>能力评估</h4>
+                        <div class="analysis-chart">
+                            <!-- 能力评估图表将通过JS渲染 -->
+                        </div>
+                    </div>
+                    <div class="analysis-section">
+                        <h4>发展建议</h4>
+                        <ul class="suggestions-list">
+                            <li>建议在未来2年内深入研究人工智能领域</li>
+                            <li>可以考虑参与开源项目来提升影响力</li>
+                        </ul>
+                    </div>
+                    <div class="analysis-section">
+                        <h4>潜在机会</h4>
+                        <div class="opportunity-cards">
+                            <!-- 机会卡片将通过JS动态生成 -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 底部导航栏 -->
+        <nav class="bottom-nav">
+            <a href="index.html" class="nav-item">
+                <span class="nav-icon">≡</span>
+                <span class="nav-label">Tasks</span>
+            </a>
+            <a href="planner.html" class="nav-item active">
+                <span class="nav-icon">📅</span>
+                <span class="nav-label">Planner</span>
+            </a>
+            <a href="profile.html" class="nav-item">
+                <span class="nav-icon">👤</span>
+                <span class="nav-label">Profile</span>
+            </a>
+        </nav>
+    </div>
+</body>
+</html> 

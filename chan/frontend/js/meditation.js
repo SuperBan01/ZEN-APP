@@ -21,16 +21,8 @@ class MeditationPage {
         this.timer = null;
         
         this.initElements();
-        if (this.startTimerBtn) {
-            this.initEventListeners();
-            this.updateDateTime();
-            this.updateQuote();
-            
-            // 每分钟更新时间
-            setInterval(() => this.updateDateTime(), 60000);
-            // 每30分钟更新禅语
-            setInterval(() => this.updateQuote(), 1800000);
-        }
+        this.initEventListeners();
+        this.loadPreferredCard();
     }
 
     initElements() {
@@ -43,6 +35,10 @@ class MeditationPage {
         this.meditationSoundBtn = document.querySelector('.meditation-page .meditation-sound-btn');
         
         console.log('Timer button found:', this.startTimerBtn);
+        
+        this.simpleCard = document.querySelector('.meditation-page .simple-card');
+        this.timerCard = document.querySelector('.meditation-page .timer-card');
+        this.switchBtn = document.querySelector('.meditation-page .switch-card-btn');
     }
 
     updateDateTime() {
@@ -84,6 +80,10 @@ class MeditationPage {
                     window.zenSounds.stopMeditationSounds();
                 }
             });
+        }
+        
+        if (this.switchBtn) {
+            this.switchBtn.addEventListener('click', () => this.toggleCardStyle());
         }
     }
 
@@ -163,6 +163,33 @@ class MeditationPage {
                 minute: '2-digit',
                 hour12: false
             });
+        }
+    }
+
+    toggleCardStyle() {
+        const isSimpleVisible = !this.simpleCard.classList.contains('hidden');
+        
+        if (isSimpleVisible) {
+            this.simpleCard.classList.add('hidden');
+            this.timerCard.classList.remove('hidden');
+        } else {
+            this.simpleCard.classList.remove('hidden');
+            this.timerCard.classList.add('hidden');
+        }
+
+        // 保存用户偏好
+        localStorage.setItem('preferredMeditationCard', isSimpleVisible ? 'timer' : 'simple');
+    }
+
+    loadPreferredCard() {
+        const preferred = localStorage.getItem('preferredMeditationCard') || 'simple';
+        
+        if (preferred === 'timer') {
+            this.simpleCard.classList.add('hidden');
+            this.timerCard.classList.remove('hidden');
+        } else {
+            this.simpleCard.classList.remove('hidden');
+            this.timerCard.classList.add('hidden');
         }
     }
 }

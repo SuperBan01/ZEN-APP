@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>个人主页</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/profile.css">
+    <script src="js/profile.js"></script>
+</head>
+<body>
+    <div class="page profile-page">
+        <!-- 顶部导航 -->
+        <header class="page-header">
+            <h1>Profile</h1>
+            <button class="settings-btn">⚙️</button>
+        </header>
+
+        <!-- 个人信息卡片 -->
+        <div class="profile-card">
+            <div class="profile-header">
+                <div class="profile-avatar">
+                    <img src="assets/images/avatar-placeholder.jpg" alt="头像">
+                    <button class="edit-avatar-btn">编辑</button>
+                </div>
+                <h2 class="profile-name">John Doe</h2>
+                <p class="profile-bio">追逐梦想的机车手</p>
+            </div>
+            <div class="profile-stats">
+                <div class="stat-item">
+                    <span class="stat-value">12</span>
+                    <span class="stat-label">完成任务</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-value">3</span>
+                    <span class="stat-label">达成目标</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-value">28</span>
+                    <span class="stat-label">骑行天数</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 时间轴标题 -->
+        <div class="section-header">
+            <h2>Timeline</h2>
+            <button class="filter-btn">
+                <span class="filter-icon">🔍</span>
+                <span>Filter</span>
+            </button>
+        </div>
+
+        <!-- 时间轴内容 -->
+        <div class="timeline-container">
+            <!-- 时间轴组 -->
+            <div class="timeline-group">
+                <div class="timeline-header">
+                    <h3>2024</h3>
+                </div>
+                <div class="timeline-items">
+                    <!-- 时间轴条目 -->
+                    <div class="timeline-item">
+                        <div class="timeline-date">3月</div>
+                        <div class="timeline-content">
+                            <div class="timeline-images">
+                                <img src="assets/images/timeline/image1.jpg" alt="事件图片">
+                                <img src="assets/images/timeline/image2.jpg" alt="事件图片">
+                                <img src="assets/images/timeline/image3.jpg" alt="事件图片">
+                            </div>
+                            <h4>获得高级工程师认证</h4>
+                            <p>经过三个月的准备，终于通过了认证考试！</p>
+                            <div class="timeline-tags">
+                                <span class="tag">职业发展</span>
+                                <span class="tag">里程碑</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="timeline-group">
+                <div class="timeline-header">
+                    <h3>2023</h3>
+                </div>
+                <div class="timeline-items">
+                    <div class="timeline-item">
+                        <div class="timeline-date">12月</div>
+                        <div class="timeline-content">
+                            <div class="timeline-images">
+                                <img src="assets/images/timeline/image4.jpg" alt="事件图片">
+                            </div>
+                            <h4>完成第一次长途骑行</h4>
+                            <p>独自完成了一次1000公里的摩托车旅行，穿越了三个省份。</p>
+                            <div class="timeline-tags">
+                                <span class="tag">旅行</span>
+                                <span class="tag">挑战</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 添加经历按钮 -->
+        <button class="add-event-btn">
+            <span class="add-icon">+</span>
+            <span>添加经历</span>
+        </button>
+
+        <!-- 底部导航栏 -->
+        <nav class="bottom-nav">
+            <a href="index.html" class="nav-item">
+                <span class="nav-icon">≡</span>
+                <span class="nav-label">Tasks</span>
+            </a>
+            <a href="planner.html" class="nav-item">
+                <span class="nav-icon">📅</span>
+                <span class="nav-label">Planner</span>
+            </a>
+            <a href="profile.html" class="nav-item active">
+                <span class="nav-icon">👤</span>
+                <span class="nav-label">Profile</span>
+            </a>
+        </nav>
+    </div>
+
+    <!-- 添加经历弹窗 -->
+    <div class="modal event-modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button class="cancel-btn">取消</button>
+                <h3>添加经历</h3>
+                <button class="save-btn">保存</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <input type="text" class="event-title ios-input" placeholder="标题">
+                </div>
+                <div class="form-group">
+                    <textarea class="event-description ios-textarea" placeholder="描述这段经历..." rows="4"></textarea>
+                </div>
+                <div class="form-group">
+                    <div class="ios-date-group">
+                        <label>发生时间</label>
+                        <input type="date" class="event-date ios-date">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="image-upload">
+                        <label>添加图片</label>
+                        <div class="image-preview-container">
+                            <button class="add-image-btn">
+                                <span class="add-icon">+</span>
+                                <span>添加图片</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="ios-tags-group">
+                        <label>标签</label>
+                        <input type="text" class="event-tags ios-input" placeholder="添加标签（用逗号分隔）">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html> 

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>机车人生</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <script src="js/tasks.js"></script>
+    <script src="js/goals.js"></script>
+    <script src="js/profile.js"></script>
+</head>
+<body>
+    <!-- 任务页面 -->
+    <section id="tasks" class="page tasks-page">
+        <div class="page-header">
+            <h1>My Tasks</h1>
+            <button class="settings-btn">⚙️</button>
+        </div>
+
+        <div class="search-bar">
+            <span class="search-icon">🔍</span>
+            <input type="text" placeholder="Search" class="search-input">
+        </div>
+
+        <div class="task-filters">
+            <button class="filter-btn active">Today</button>
+            <button class="filter-btn">Upcoming</button>
+            <button class="filter-btn">All</button>
+        </div>
+
+        <div class="tasks-list">
+            <!-- 任务卡片示例 -->
+            <div class="task-card">
+                <div class="task-check"></div>
+                <div class="task-content">
+                    <h3>Finish project report</h3>
+                    <span class="task-priority high">High</span>
+                </div>
+            </div>
+            <div class="task-card">
+                <div class="task-check"></div>
+                <div class="task-content">
+                    <h3>Buy groceries</h3>
+                    <span class="task-priority low">Low</span>
+                </div>
+            </div>
+        </div>
+
+        <button class="add-task-btn">
+            <span class="add-icon">+</span>
+            <span>Add to My Day</span>
+        </button>
+
+        <!-- 底部导航栏 -->
+        <nav class="bottom-nav">
+            <a href="index.html" class="nav-item active">
+                <span class="nav-icon">≡</span>
+                <span class="nav-label">Tasks</span>
+            </a>
+            <a href="planner.html" class="nav-item">
+                <span class="nav-icon">📅</span>
+                <span class="nav-label">Planner</span>
+            </a>
+            <a href="profile.html" class="nav-item">
+                <span class="nav-icon">👤</span>
+                <span class="nav-label">Profile</span>
+            </a>
+        </nav>
+    </section>
+</body>
+</html> 

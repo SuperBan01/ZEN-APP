@@ -19,12 +19,21 @@
     <section id="welcome" class="page welcome-page">
         <div class="welcome-content">
             <h1>Welcome to your new space</h1>
-            <p>We've created a simple and beautiful place for you to reflect on your goals.</p>
-            <div class="category-images">
-                <img src="assets/images/zen-path.png" alt="禅境之路" class="category-img">
-                <img src="assets/images/1731417155368.png" alt="纹理图案" class="category-img">
+            <p>Choose your path to self-reflection and growth.</p>
+            <div class="mode-selection">
+                <div class="mode-card zen-mode">
+                    <img src="assets/images/zen-path.png" alt="禅境之路" class="mode-img">
+                    <h2>禅境修行</h2>
+                    <p>寻找内心的平静</p>
+                    <button class="mode-btn zen-btn">进入禅境</button>
+                </div>
+                <div class="mode-card moto-mode">
+                    <img src="assets/images/moto-path.png" alt="机车之路" class="mode-img">
+                    <h2>机车人生</h2>
+                    <p>追寻梦想的旅程</p>
+                    <button class="mode-btn moto-btn">启程出发</button>
+                </div>
             </div>
-            <button class="start-btn">Start Reflecting</button>
         </div>
     </section>
 
@@ -53,7 +62,23 @@
 
     <!-- 禅境冥想页面 -->
     <section id="meditation" class="page meditation-page hidden">
-        <div class="glass-card">
+        <!-- 简洁版卡片 -->
+        <div class="glass-card simple-card">
+            <div class="datetime">
+                <div class="time">15:30</div>
+                <div class="date">2024年3月12日</div>
+            </div>
+            <div class="zen-quote">
+                <!-- 禅语将通过 JavaScript 动态生成 -->
+            </div>
+            <button class="meditation-toggle-btn">
+                <span class="meditation-icon">🧘‍♂️</span>
+                <span class="meditation-label">开始冥想</span>
+            </button>
+        </div>
+
+        <!-- 计时器版卡片 -->
+        <div class="glass-card timer-card hidden">
             <div class="datetime">
                 <div class="time">15:30</div>
                 <div class="date">2024年3月12日</div>
@@ -66,8 +91,6 @@
                     <span class="minutes">03</span>:<span class="seconds">00</span>
                 </div>
                 <button class="start-timer-btn" id="startTimer">开始计时</button>
-                
-                <!-- 只保留基本音效控制 -->
                 <div class="sound-controls">
                     <button class="sound-btn" onclick="zenSounds.playSingingBowl()">
                         <span class="sound-icon">🔔</span>
@@ -88,6 +111,12 @@
                 </div>
             </div>
         </div>
+
+        <!-- 添加切换按钮 -->
+        <button class="switch-card-btn">
+            <span class="switch-icon">🔄</span>
+            <span class="switch-label">切换界面</span>
+        </button>
 
         <nav class="bottom-nav">
             <a href="#home" class="nav-item active">冥想</a>
@@ -267,7 +296,7 @@
                     </div>
                     <div class="realm-level-item">
                         <h4>明道 (31-50级)</h4>
-                        <p>青山绿水，尽是真如。物皆为我师，处处是道场。</p>
+                        <p>青山绿水，尽是真如。物皆为���师，处处是道场。</p>
                     </div>
                 </div>
                 <div class="exp-rules">

@@ -953,4 +953,108 @@ button, input, textarea {
 h1, h2, h3, h4, h5, h6 {
     font-family: inherit;
     font-weight: 600;
+}
+
+/* 添加模式选择卡片样式 */
+.mode-selection {
+    display: flex;
+    gap: 2rem;
+    margin: 2rem 0;
+}
+
+.mode-card {
+    flex: 1;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 20px;
+    padding: 2rem;
+    text-align: center;
+    box-shadow: 0 8px 32px rgba(31, 38, 135, 0.1);
+    transition: transform 0.3s ease;
+}
+
+.mode-card:hover {
+    transform: translateY(-5px);
+}
+
+.mode-img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 12px;
+    margin-bottom: 1.5rem;
+}
+
+.mode-card h2 {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+    color: #2c3e50;
+}
+
+.mode-card p {
+    color: #666;
+    margin-bottom: 1.5rem;
+}
+
+.mode-btn {
+    background: none;
+    border: 2px solid;
+    border-radius: 24px;
+    padding: 0.8rem 2rem;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.zen-btn {
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+}
+
+.zen-btn:hover {
+    background: var(--primary-color);
+    color: white;
+}
+
+.moto-btn {
+    border-color: #FF6B6B;
+    color: #FF6B6B;
+}
+
+.moto-btn:hover {
+    background: #FF6B6B;
+    color: white;
+}
+
+/* 添加切换按钮样式 */
+.switch-card-btn {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    border-radius: 50%;
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+}
+
+.switch-card-btn:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: rotate(180deg);
+}
+
+.switch-icon {
+    font-size: 1.5rem;
+    color: #2c3e50;
+}
+
+/* 修改卡片显示逻辑 */
+.glass-card.hidden {
+    display: none;
 } 

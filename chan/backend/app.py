@@ -1,185 +1,272 @@
-from openai import OpenAI
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-import sys
-import logging
 from datetime import datetime, timedelta
-from collections import defaultdict
-
-# 配置日志
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
+import sqlite3
+import json
 
 app = Flask(__name__)
 CORS(app)
 
-# 配置 OpenAI 客户端
-client = OpenAI(
-    api_key="oTPbBhkIoGVJRqQ1r4k9kM5uWbAnuHbR2EcDarAIX5jgejvrSgV0lgGFcZjweF1t",
-    base_url="https://api.stepfun.com/v1"
-)
-
-# 用户对话次数记录
-chat_counts = defaultdict(lambda: {'count': 0, 'last_reset': datetime.now()})
-MAX_DAILY_CHATS = 3
-
-# 添加用户数据存储
-user_stats = defaultdict(lambda: {
-    'meditation_count': 0,
-    'streak_days': 0,
-    'chat_count': 0,
-    'last_meditation': None,
-    'last_streak_check': datetime.now().date()
-})
-
-def get_remaining_chats(user_id):
-    user_data = chat_counts[user_id]
-    now = datetime.now()
-    
-    # 如果是新的一天，重置计数
-    if now.date() > user_data['last_reset'].date():
-        user_data['count'] = 0
-        user_data['last_reset'] = now
-    
-    return MAX_DAILY_CHATS - user_data['count']
-
-def update_streak(user_id):
-    """更新用户的持续打卡天数"""
-    user_data = user_stats[user_id]
-    today = datetime.now().date()
-    
-    # 如果是第一次打卡
-    if user_data['last_meditation'] is None:
-        user_data['streak_days'] = 1
-        user_data['last_meditation'] = today
-        return
-    
-    last_meditation = user_data['last_meditation']
-    
-    # 如果今天已经打卡过，不重复计算
-    if last_meditation == today:
-        return
-        
-    # 如果是连续打卡
-    if (today - last_meditation).days == 1:
-        user_data['streak_days'] += 1
-    # 如果中断了打卡
-    elif (today - last_meditation).days > 1:
-        user_data['streak_days'] = 1
-    
-    user_data['last_meditation'] = today
-
-@app.route('/api/master/chat', methods=['POST'])
-def chat_with_master():
-    try:
-        message = request.json.get('message')
-        user_id = request.json.get('user_id', 'default_user')
-        
-        if not message:
-            return jsonify({'error': '消息不能为空'}), 400
-        
-        # 检查对话次数限制
-        remaining_chats = get_remaining_chats(user_id)
-        if remaining_chats <= 0:
-            return jsonify({
-                'error': '今日对话次数已用完，明日再来。',
-                'remaining_chats': 0
-            }), 429
-            
-        # 构建消息列表
-        messages = [
-            {
-                "role": "system",
-                "content": """你是一位智慧而严厉的禅师，名叫"心一"。你擅长中文对话，专注于禅修指导。
-                你应该：
-                1. 以平和、富有哲理的方式回答问题
-                2. 回答要简短有力，富有禅意，通常每句回复不超过20个字
-                3. 经常引用禅宗经典或者禅师语录
-                4. 引导用户思考和内省
-                5. 使用优雅的中文回答
-                6. 拒绝与禅修无关的话题
-                7. 保持对话的纯净与专注"""
-            },
-            {
-                "role": "user",
-                "content": message
-            }
-        ]
-        
-        # 调用 API
-        completion = client.chat.completions.create(
-            model="step-1-8k",
-            messages=messages
+def init_db():
+    conn = sqlite3.connect('tasks.db')
+    c = conn.cursor()
+    c.execute('''
+        CREATE TABLE IF NOT EXISTS tasks (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            title TEXT NOT NULL,
+            priority TEXT NOT NULL,
+            date TEXT NOT NULL,
+            completed BOOLEAN DEFAULT 0,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            category TEXT DEFAULT 'task',
+            description TEXT,
+            repeat_type TEXT DEFAULT 'none',
+            repeat_value INTEGER DEFAULT 0,
+            parent_task_id INTEGER DEFAULT NULL,
+            FOREIGN KEY (parent_task_id) REFERENCES tasks (id)
         )
+    ''')
+    conn.commit()
+    conn.close()
+
+# 获取所有任务，支持分页和过滤
+@app.route('/api/tasks', methods=['GET'])
+def get_tasks():
+    page = request.args.get('page', 1, type=int)
+    per_page = request.args.get('per_page', 10, type=int)
+    filter_type = request.args.get('filter', 'all')
+    
+    conn = sqlite3.connect('tasks.db')
+    c = conn.cursor()
+    
+    today = datetime.now().strftime('%Y-%m-%d')
+    offset = (page - 1) * per_page
+    
+    base_query = '''
+        SELECT id, title, priority, date, completed, created_at, category, description
+        FROM tasks
+    '''
+    
+    if filter_type == 'today':
+        query = base_query + ' WHERE date = ?'
+        params = (today,)
+    elif filter_type == 'upcoming':
+        query = base_query + ' WHERE date > ?'
+        params = (today,)
+    elif filter_type == 'past':
+        query = base_query + ' WHERE date < ?'
+        params = (today,)
+    else:
+        query = base_query
+        params = ()
+    
+    # 添加排序和分页
+    query += ' ORDER BY date DESC, priority DESC LIMIT ? OFFSET ?'
+    params = params + (per_page, offset)
+    
+    c.execute(query, params)
+    tasks = c.fetchall()
+    
+    # 获取总数
+    c.execute('SELECT COUNT(*) FROM tasks')
+    total = c.fetchone()[0]
+    
+    conn.close()
+    
+    return jsonify({
+        'tasks': [{
+            'id': task[0],
+            'title': task[1],
+            'priority': task[2],
+            'date': task[3],
+            'completed': bool(task[4]),
+            'created_at': task[5],
+            'category': task[6],
+            'description': task[7]
+        } for task in tasks],
+        'total': total,
+        'page': page,
+        'per_page': per_page,
+        'total_pages': (total + per_page - 1) // per_page
+    })
+
+# 添加新任务
+@app.route('/api/tasks', methods=['POST'])
+def add_task():
+    data = request.json
+    conn = sqlite3.connect('tasks.db')
+    c = conn.cursor()
+    
+    # 处理重复任务
+    if data.get('repeat_type') and data.get('repeat_value'):
+        # 创建父任务
+        c.execute('''
+            INSERT INTO tasks (title, priority, date, category, description, repeat_type, repeat_value)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
+        ''', (
+            data['title'],
+            data['priority'],
+            data['date'],
+            data.get('category', 'task'),
+            data.get('description', ''),
+            data['repeat_type'],
+            data['repeat_value']
+        ))
+        parent_id = c.lastrowid
         
-        # 获取响应内容
-        zen_response = completion.choices[0].message.content
-        
-        # 更新对话计数和统计
-        chat_counts[user_id]['count'] += 1
-        user_stats[user_id]['chat_count'] += 1
-        remaining = get_remaining_chats(user_id)
-        
-        return jsonify({
-            'response': zen_response,
-            'status': 'success',
-            'remaining_chats': remaining,
-            'chat_count': user_stats[user_id]['chat_count']
-        })
+        # 创建重复任务实例
+        start_date = datetime.strptime(data['date'], '%Y-%m-%d')
+        for i in range(data['repeat_value']):
+            if data['repeat_type'] == 'daily':
+                next_date = start_date + timedelta(days=i+1)
+            elif data['repeat_type'] == 'weekly':
+                next_date = start_date + timedelta(weeks=i+1)
+            elif data['repeat_type'] == 'monthly':
+                next_date = start_date + timedelta(days=(i+1)*30)
             
-    except Exception as e:
-        logger.error(f"Chat endpoint error: {str(e)}")
-        return jsonify({
-            'error': '禅师暂时无法回应',
-            'details': str(e)
-        }), 500
-
-@app.route('/api/master/remaining_chats', methods=['GET'])
-def get_remaining_chats_route():
-    user_id = request.args.get('user_id', 'default_user')
-    remaining = get_remaining_chats(user_id)
-    return jsonify({
-        'remaining_chats': remaining,
-        'max_daily_chats': MAX_DAILY_CHATS
-    })
-
-@app.route('/health', methods=['GET'])
-def health_check():
-    """健康检查端点"""
-    return jsonify({'status': 'healthy'}), 200
-
-@app.route('/api/cultivation/stats', methods=['GET'])
-def get_user_stats():
-    """获取用户统计数据"""
-    user_id = request.args.get('user_id', 'default_user')
-    stats = user_stats[user_id]
-    return jsonify({
-        'meditation_count': stats['meditation_count'],
-        'streak_days': stats['streak_days'],
-        'chat_count': stats['chat_count']
-    })
-
-@app.route('/api/meditation/record', methods=['POST'])
-def record_meditation():
-    """记录一次冥想"""
-    user_id = request.json.get('user_id', 'default_user')
-    duration = request.json.get('duration', 0)
+            c.execute('''
+                INSERT INTO tasks (title, priority, date, category, description, parent_task_id)
+                VALUES (?, ?, ?, ?, ?, ?)
+            ''', (
+                data['title'],
+                data['priority'],
+                next_date.strftime('%Y-%m-%d'),
+                data.get('category', 'task'),
+                data.get('description', ''),
+                parent_id
+            ))
+    else:
+        # 创建单次任务
+        c.execute('''
+            INSERT INTO tasks (title, priority, date, category, description)
+            VALUES (?, ?, ?, ?, ?)
+        ''', (
+            data['title'],
+            data['priority'],
+            data['date'],
+            data.get('category', 'task'),
+            data.get('description', '')
+        ))
     
-    user_stats[user_id]['meditation_count'] += 1
-    update_streak(user_id)
+    conn.commit()
+    task_id = c.lastrowid
+    conn.close()
     
     return jsonify({
-        'status': 'success',
-        'meditation_count': user_stats[user_id]['meditation_count'],
-        'streak_days': user_stats[user_id]['streak_days']
+        'id': task_id,
+        'message': 'Task created successfully'
+    }), 201
+
+# 更新任务
+@app.route('/api/tasks/<int:task_id>', methods=['PUT'])
+def update_task(task_id):
+    data = request.json
+    conn = sqlite3.connect('tasks.db')
+    c = conn.cursor()
+    
+    # 检查是否是重复任务的实例
+    c.execute('SELECT parent_task_id FROM tasks WHERE id = ?', (task_id,))
+    result = c.fetchone()
+    parent_id = result[0] if result else None
+    
+    if parent_id and data.get('update_all'):
+        # 更新所有相关任务
+        c.execute('''
+            UPDATE tasks
+            SET title = ?, priority = ?, category = ?, description = ?
+            WHERE parent_task_id = ? OR id = ?
+        ''', (
+            data['title'],
+            data['priority'],
+            data.get('category', 'task'),
+            data.get('description', ''),
+            parent_id,
+            parent_id
+        ))
+    else:
+        # 更新单个任务
+        c.execute('''
+            UPDATE tasks
+            SET title = ?, priority = ?, date = ?, completed = ?, 
+                category = ?, description = ?
+            WHERE id = ?
+        ''', (
+            data['title'],
+            data['priority'],
+            data['date'],
+            data.get('completed', False),
+            data.get('category', 'task'),
+            data.get('description', ''),
+            task_id
+        ))
+    
+    conn.commit()
+    conn.close()
+    
+    return jsonify({
+        'message': 'Task updated successfully'
     })
 
-def main():
-    try:
-        app.run(debug=True, host='0.0.0.0', port=5000)
-    except Exception as e:
-        logger.error(f"Server failed to start: {str(e)}")
-        sys.exit(1)
+# 删除任务
+@app.route('/api/tasks/<int:task_id>', methods=['DELETE'])
+def delete_task(task_id):
+    conn = sqlite3.connect('tasks.db')
+    c = conn.cursor()
+    
+    # 检查是否是重复任务的实例
+    c.execute('SELECT parent_task_id FROM tasks WHERE id = ?', (task_id,))
+    result = c.fetchone()
+    parent_id = result[0] if result else None
+    
+    if parent_id and request.args.get('delete_all') == 'true':
+        # 删除所有相关任务
+        c.execute('DELETE FROM tasks WHERE parent_task_id = ? OR id = ?', (parent_id, parent_id))
+    else:
+        # 删除单个任务
+        c.execute('DELETE FROM tasks WHERE id = ?', (task_id,))
+    
+    conn.commit()
+    conn.close()
+    
+    return jsonify({
+        'message': 'Task deleted successfully'
+    })
+
+# 获取任务统计信息
+@app.route('/api/tasks/stats', methods=['GET'])
+def get_task_stats():
+    conn = sqlite3.connect('tasks.db')
+    c = conn.cursor()
+    
+    today = datetime.now().strftime('%Y-%m-%d')
+    
+    # 获取各种统计数据
+    c.execute('SELECT COUNT(*) FROM tasks WHERE completed = 1')
+    completed_total = c.fetchone()[0]
+    
+    c.execute('SELECT COUNT(*) FROM tasks WHERE date = ? AND completed = 0', (today,))
+    today_pending = c.fetchone()[0]
+    
+    c.execute('SELECT COUNT(*) FROM tasks WHERE date > ?', (today,))
+    upcoming_total = c.fetchone()[0]
+    
+    c.execute('''
+        SELECT priority, COUNT(*) 
+        FROM tasks 
+        WHERE completed = 0 
+        GROUP BY priority
+    ''')
+    priority_stats = dict(c.fetchall())
+    
+    conn.close()
+    
+    return jsonify({
+        'completed_total': completed_total,
+        'today_pending': today_pending,
+        'upcoming_total': upcoming_total,
+        'priority_stats': priority_stats
+    })
 
 if __name__ == '__main__':
-    main() 
+    init_db()
+    app.run(debug=True) 
