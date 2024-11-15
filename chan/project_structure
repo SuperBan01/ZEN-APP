@@ -1,0 +1,29 @@
+zen_app/
+├── frontend/
+│   ├── index.html
+│   ├── assets/
+│   │   ├── images/
+│   │   │   ├── zen-path.png
+│   │   │   ├── meditation.png
+│   │   │   └── pattern.png
+│   │   └── audio/
+│   │       ├── rain.mp3
+│   │       ├── forest.mp3
+│   │       └── ocean.mp3
+│   ├── css/
+│   │   └── styles.css
+│   └── js/
+│       ├── meditation.js
+│       ├── master.js
+│       ├── cultivation.js
+│       ├── navigation.js
+│       └── settings.js
+├── backend/
+│   ├── app.py
+│   ├── config.py
+│   └── models/
+│       ├── user.py
+│       ├── meditation.py
+│       ├── todo.py
+│       └── achievement.py
+└── requirements.txt 

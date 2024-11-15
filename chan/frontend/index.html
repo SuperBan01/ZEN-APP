@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>禅境修真</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <script src="js/zen-sounds.js"></script>
+    <script src="js/realm-system.js"></script>
+    <script src="js/navigation.js"></script>
+    <script src="js/meditation.js"></script>
+    <script src="js/master.js"></script>
+    <script src="js/cultivation.js"></script>
+    <script src="js/journal.js"></script>
+    <script src="js/welcome.js"></script>
+</head>
+<body>
+    <!-- 首页选择界面 -->
+    <section id="welcome" class="page welcome-page">
+        <div class="welcome-content">
+            <h1>Welcome to your new space</h1>
+            <p>We've created a simple and beautiful place for you to reflect on your goals.</p>
+            <div class="category-images">
+                <img src="assets/images/zen-path.png" alt="禅境之路" class="category-img">
+                <img src="assets/images/1731417155368.png" alt="纹理图案" class="category-img">
+            </div>
+            <button class="start-btn">Start Reflecting</button>
+        </div>
+    </section>
+
+    <!-- 禅境首页（冥想页面） -->
+    <section id="zen-home" class="page zen-home-page hidden">
+        <div class="glass-card">
+            <div class="datetime">
+                <div class="time">15:30</div>
+                <div class="date">2024年3月12日</div>
+            </div>
+            <div class="zen-quote">
+                <!-- 禅语将通过 JavaScript 动态生成 -->
+            </div>
+            <button class="meditation-toggle-btn">
+                <span class="meditation-icon">🧘‍♂️</span>
+                <span class="meditation-label">开始冥想</span>
+            </button>
+        </div>
+
+        <nav class="bottom-nav">
+            <a href="#home" class="nav-item active">冥想</a>
+            <a href="#chat" class="nav-item">论禅</a>
+            <a href="#cultivation" class="nav-item">禅境</a>
+        </nav>
+    </section>
+
+    <!-- 禅境冥想页面 -->
+    <section id="meditation" class="page meditation-page hidden">
+        <div class="glass-card">
+            <div class="datetime">
+                <div class="time">15:30</div>
+                <div class="date">2024年3月12日</div>
+            </div>
+            <div class="zen-quote">
+                <!-- 禅语将通过 JavaScript 动态生成 -->
+            </div>
+            <div class="meditation-controls">
+                <div class="timer">
+                    <span class="minutes">03</span>:<span class="seconds">00</span>
+                </div>
+                <button class="start-timer-btn" id="startTimer">开始计时</button>
+                
+                <!-- 只保留基本音效控制 -->
+                <div class="sound-controls">
+                    <button class="sound-btn" onclick="zenSounds.playSingingBowl()">
+                        <span class="sound-icon">🔔</span>
+                        <span class="sound-label">钵音</span>
+                    </button>
+                    <button class="sound-btn" onclick="zenSounds.playOm()">
+                        <span class="sound-icon">🕉️</span>
+                        <span class="sound-label">Om</span>
+                    </button>
+                    <button class="sound-btn" onclick="zenSounds.playWhiteNoise()">
+                        <span class="sound-icon">🌬️</span>
+                        <span class="sound-label">风声</span>
+                    </button>
+                    <button class="sound-btn meditation-sound-btn">
+                        <span class="sound-icon">🧘</span>
+                        <span class="sound-label">冥想音效</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <nav class="bottom-nav">
+            <a href="#home" class="nav-item active">冥想</a>
+            <a href="#chat" class="nav-item">论禅</a>
+            <a href="#cultivation" class="nav-item">禅境</a>
+        </nav>
+    </section>
+
+    <!-- 论禅页面 -->
+    <section id="zen-master" class="page zen-master-page hidden">
+        <header class="page-header">
+            <button class="back-btn">←</button>
+            <h1>Zen Master, Thich Nhat Hanh</h1>
+        </header>
+
+        <div class="master-content">
+            <div class="master-intro">
+                <p>The Zen master, Thich Nhat Hanh, is a global spiritual leader and peace activist. Born in 1926 in central Vietnam, he joined a Zen monastery at the age of 16. He has published over 100 books, including the best-selling "The Miracle of Mindfulness".</p>
+            </div>
+
+            <div class="reading-list">
+                <div class="reading-item">
+                    <h3>What is enlightenment?</h3>
+                    <span class="reading-time">5 min read</span>
+                </div>
+                <div class="reading-item">
+                    <h3>How to find joy?</h3>
+                    <span class="reading-time">3 min read</span>
+                </div>
+                <div class="reading-item">
+                    <h3>How to live?</h3>
+                    <span class="reading-time">3 min read</span>
+                </div>
+                <div class="reading-item">
+                    <h3>Our true nature</h3>
+                    <span class="reading-time">2 min read</span>
+                </div>
+            </div>
+
+            <button class="chat-btn">论禅</button>
+        </div>
+
+        <nav class="bottom-nav">
+            <a href="#home" class="nav-item">首页</a>
+            <a href="#chat" class="nav-item active">论禅</a>
+            <a href="#cultivation" class="nav-item">禅境</a>
+        </nav>
+    </section>
+
+    <!-- 禅境页面 -->
+    <section id="cultivation" class="page cultivation-page hidden">
+        <header class="page-header">
+            <button class="back-btn">←</button>
+            <h1>禅境</h1>
+        </header>
+
+        <div class="cultivation-content">
+            <!-- 禅修境界展示 -->
+            <div class="realm-card">
+                <div class="realm-header">
+                    <div class="realm-title">当前境界：<span class="realm-name">初心</span></div>
+                    <button class="info-btn" title="修行说明">ⓘ</button>
+                </div>
+                <div class="realm-description">万法归一，一归何处？</div>
+                <div class="realm-progress">
+                    <div class="realm-circle">
+                        <svg viewBox="0 0 100 100">
+                            <circle cx="50" cy="50" r="45" class="progress-bg"/>
+                            <circle cx="50" cy="50" r="45" class="progress-bar"/>
+                        </svg>
+                        <div class="realm-level">3</div>
+                    </div>
+                </div>
+                <div class="realm-exp">
+                    <span class="current-exp">300</span> / <span class="next-exp">1000</span>
+                </div>
+            </div>
+
+            <!-- 修行统计 -->
+            <div class="practice-stats">
+                <div class="stat-card">
+                    <div class="stat-icon">🌅</div>
+                    <div class="stat-value">108</div>
+                    <div class="stat-label">禅修次数</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">⏳</div>
+                    <div class="stat-value">21</div>
+                    <div class="stat-label">持续天数</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">💭</div>
+                    <div class="stat-value">36</div>
+                    <div class="stat-label">论禅次数</div>
+                </div>
+            </div>
+
+            <!-- 智慧语录 -->
+            <div class="wisdom-section">
+                <h2>禅师开示</h2>
+                <div class="wisdom-carousel">
+                    <div class="wisdom-card active">
+                        <div class="quote-text">心若冰清，天塌不惊。</div>
+                        <div class="quote-date">三日前的对话</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 修行日志 -->
+            <div class="journal-section">
+                <h2>修行日志</h2>
+                <div class="journal-entries">
+                    <!-- 感悟卡片将在这里展示 -->
+                    <div class="journal-card">
+                        <div class="journal-date">2024年3月12日</div>
+                        <div class="journal-text">静坐中感受到内心的平静，如同明镜止水...</div>
+                    </div>
+                </div>
+                <button class="add-journal-btn">记录今日感悟</button>
+            </div>
+
+            <!-- 禅修目标 -->
+            <div class="goals-section">
+                <h2>修行方向</h2>
+                <div class="goals-list">
+                    <div class="goal-item">
+                        <div class="goal-check">✓</div>
+                        <div class="goal-content">
+                            <div class="goal-title">初习坐禅</div>
+                            <div class="goal-progress">7/7 天</div>
+                        </div>
+                    </div>
+                    <div class="goal-item active">
+                        <div class="goal-check">•</div>
+                        <div class="goal-content">
+                            <div class="goal-title">达到一小时禅定</div>
+                            <div class="goal-progress">3/10 天</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 记录感悟弹窗 -->
+    <div class="journal-modal hidden">
+        <div class="modal-content">
+            <h3>记录今日感悟</h3>
+            <textarea id="journalText" placeholder="写下你的修行感悟..."></textarea>
+            <div class="modal-buttons">
+                <button class="cancel-btn">取消</button>
+                <button class="save-btn">保存</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 修改修行说明弹窗的结构 -->
+    <div class="realm-info-modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>修行境界说明</h3>
+                <button class="close-modal-btn">×</button>
+            </div>
+            <div class="realm-info-content">
+                <div class="realm-level-list">
+                    <div class="realm-level-item">
+                        <h4>初心 (1-5级)</h4>
+                        <p>万法归一，一归何处？初入禅门，保持好奇与谦逊之心。</p>
+                    </div>
+                    <div class="realm-level-item">
+                        <h4>明心 (6-15级)</h4>
+                        <p>心似明镜台，时时勤拂拭。渐悟心性本净，不为尘境所染。</p>
+                    </div>
+                    <div class="realm-level-item">
+                        <h4>见性 (16-30级)</h4>
+                        <p>菩提本无树，明镜亦非台。直见本性，了无一物。</p>
+                    </div>
+                    <div class="realm-level-item">
+                        <h4>明道 (31-50级)</h4>
+                        <p>青山绿水，尽是真如。物皆为我师，处处是道场。</p>
+                    </div>
+                </div>
+                <div class="exp-rules">
+                    <h4>修行增进方式：</h4>
+                    <ul>
+                        <li>每日禅修：+100经验</li>
+                        <li>完成冥想：+50经验/次</li>
+                        <li>记录感悟：+30经验/次</li>
+                        <li>与禅师论道：+20经验/次</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 添加升级提示弹窗 -->
+    <div class="level-up-modal hidden">
+        <div class="modal-content">
+            <div class="level-up-animation">🌟</div>
+            <h3>境界提升</h3>
+            <p class="level-up-text">恭喜！你的境界已提升至 <span class="new-level"></span></p>
+            <p class="level-up-quote"></p>
+            <button class="close-modal-btn">继续修行</button>
+        </div>
+    </div>
+</body>
+</html> 

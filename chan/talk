@@ -1,0 +1,317 @@
+<!-- 前端代码 -->
+<!-- index.html -->
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>禅修与成长</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav>
+        <ul>
+            <li><a href="#meditation">禅境冥想</a></li>
+            <li><a href="#master">大师谈</a></li>
+            <li><a href="#cultivation">修真境界</a></li>
+            <li><a href="#todo">Todo看板</a></li>
+            <li><a href="#settings">Todo设置</a></li>
+            <li><a href="#achievements">人生成就</a></li>
+        </ul>
+    </nav>
+
+    <main>
+        <!-- 禅境冥想页面 -->
+        <section id="meditation" class="page">
+            <h1>禅境冥想</h1>
+            <div class="meditation-controls">
+                <select id="meditation-music">
+                    <option value="rain">雨声</option>
+                    <option value="forest">森林</option>
+                    <option value="ocean">海浪</option>
+                </select>
+                <input type="number" id="meditation-time" min="1" max="60" value="15">
+                <button id="start-meditation">开始冥想</button>
+            </div>
+            <div id="meditation-timer"></div>
+        </section>
+
+        <!-- 大师谈页面 -->
+        <section id="master" class="page">
+            <h1>大师谈</h1>
+            <div class="master-content">
+                <div class="wisdom-quotes"></div>
+                <div class="chat-interface">
+                    <div id="chat-messages"></div>
+                    <input type="text" id="user-input" placeholder="与禅师对话...">
+                </div>
+            </div>
+        </section>
+
+        <!-- 修真境界页面 -->
+        <section id="cultivation" class="page">
+            <h1>修真境界</h1>
+            <div class="progress-tracker">
+                <div class="meditation-stats"></div>
+                <div class="milestones"></div>
+            </div>
+        </section>
+
+        <!-- Todo看板页面 -->
+        <section id="todo" class="page">
+            <h1>Todo看板</h1>
+            <div class="todo-board">
+                <div class="todo-column" id="todo-pending">待办</div>
+                <div class="todo-column" id="todo-in-progress">进行中</div>
+                <div class="todo-column" id="todo-completed">已完成</div>
+            </div>
+        </section>
+
+        <!-- Todo设置页面 -->
+        <section id="settings" class="page">
+            <h1>Todo设置</h1>
+            <form id="todo-form">
+                <input type="text" id="todo-title" placeholder="任务标题">
+                <textarea id="todo-description" placeholder="任务描述"></textarea>
+                <input type="date" id="todo-deadline">
+                <select id="todo-priority">
+                    <option value="high">高优先级</option>
+                    <option value="medium">中优先级</option>
+                    <option value="low">低优先级</option>
+                </select>
+                <button type="submit">添加任务</button>
+            </form>
+        </section>
+
+        <!-- 人生成就页面 -->
+        <section id="achievements" class="page">
+            <h1>人生成就</h1>
+            <div class="timeline"></div>
+            <button id="add-achievement">添加新成就</button>
+        </section>
+    </main>
+</body>
+<script src="app.js"></script>
+</html>
+
+<!-- style.css -->
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Microsoft YaHei', sans-serif;
+    background-color: #f5f5f5;
+}
+
+nav {
+    background-color: #333;
+    padding: 1rem;
+}
+
+nav ul {
+    display: flex;
+    justify-content: space-around;
+    list-style: none;
+}
+
+nav a {
+    color: white;
+    text-decoration: none;
+}
+
+.page {
+    padding: 2rem;
+    display: none;
+}
+
+.page.active {
+    display: block;
+}
+
+.meditation-controls {
+    margin: 2rem 0;
+    display: flex;
+    gap: 1rem;
+}
+
+.todo-board {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+}
+
+.todo-column {
+    background: white;
+    padding: 1rem;
+    border-radius: 8px;
+    min-height: 300px;
+}
+
+.timeline {
+    margin: 2rem 0;
+    position: relative;
+}
+</style>
+
+<!-- app.js -->
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    // 页面导航
+    const pages = document.querySelectorAll('.page');
+    const navLinks = document.querySelectorAll('nav a');
+
+    navLinks.forEach(link => {
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+            const targetId = link.getAttribute('href').slice(1);
+            pages.forEach(page => {
+                page.classList.remove('active');
+                if (page.id === targetId) {
+                    page.classList.add('active');
+                }
+            });
+        });
+    });
+
+    // 冥想计时器功能
+    let meditationInterval;
+    const startMeditationBtn = document.getElementById('start-meditation');
+    const meditationTimer = document.getElementById('meditation-timer');
+
+    startMeditationBtn.addEventListener('click', () => {
+        const duration = document.getElementById('meditation-time').value;
+        let timeLeft = duration * 60;
+        
+        clearInterval(meditationInterval);
+        meditationInterval = setInterval(() => {
+            timeLeft--;
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            meditationTimer.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+            
+            if (timeLeft <= 0) {
+                clearInterval(meditationInterval);
+                alert('冥想结束');
+            }
+        }, 1000);
+    });
+
+    // Todo功能
+    const todoForm = document.getElementById('todo-form');
+    todoForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const todoData = {
+            title: document.getElementById('todo-title').value,
+            description: document.getElementById('todo-description').value,
+            deadline: document.getElementById('todo-deadline').value,
+            priority: document.getElementById('todo-priority').value
+        };
+        // 添加到待办列表
+        const todoItem = document.createElement('div');
+        todoItem.className = 'todo-item';
+        todoItem.innerHTML = `
+            <h3>${todoData.title}</h3>
+            <p>${todoData.description}</p>
+            <span>截止日期: ${todoData.deadline}</span>
+        `;
+        document.getElementById('todo-pending').appendChild(todoItem);
+        todoForm.reset();
+    });
+});
+</script>
+
+<!-- 后端代码 (Python) -->
+from flask import Flask, request, jsonify
+from flask_sqlalchemy import SQLAlchemy
+from datetime import datetime
+
+app = Flask(__name__)
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///app.db'
+db = SQLAlchemy(app)
+
+# 数据模型
+class User(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(80), unique=True, nullable=False)
+    meditation_minutes = db.Column(db.Integer, default=0)
+
+class Todo(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(200), nullable=False)
+    description = db.Column(db.Text)
+    deadline = db.Column(db.DateTime)
+    status = db.Column(db.String(20))
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+
+class Achievement(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(200), nullable=False)
+    date = db.Column(db.DateTime, default=datetime.utcnow)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+
+# API路由
+@app.route('/api/meditation/log', methods=['POST'])
+def log_meditation():
+    data = request.json
+    user_id = data.get('user_id')
+    minutes = data.get('minutes')
+    
+    user = User.query.get(user_id)
+    if user:
+        user.meditation_minutes += minutes
+        db.session.commit()
+        return jsonify({'success': True})
+    return jsonify({'success': False})
+
+@app.route('/api/todos', methods=['GET', 'POST'])
+def handle_todos():
+    if request.method == 'POST':
+        data = request.json
+        new_todo = Todo(
+            title=data['title'],
+            description=data['description'],
+            deadline=datetime.strptime(data['deadline'], '%Y-%m-%d'),
+            status='pending',
+            user_id=data['user_id']
+        )
+        db.session.add(new_todo)
+        db.session.commit()
+        return jsonify({'success': True})
+    else:
+        user_id = request.args.get('user_id')
+        todos = Todo.query.filter_by(user_id=user_id).all()
+        return jsonify([{
+            'id': todo.id,
+            'title': todo.title,
+            'description': todo.description,
+            'deadline': todo.deadline.strftime('%Y-%m-%d'),
+            'status': todo.status
+        } for todo in todos])
+
+@app.route('/api/achievements', methods=['GET', 'POST'])
+def handle_achievements():
+    if request.method == 'POST':
+        data = request.json
+        new_achievement = Achievement(
+            title=data['title'],
+            user_id=data['user_id']
+        )
+        db.session.add(new_achievement)
+        db.session.commit()
+        return jsonify({'success': True})
+    else:
+        user_id = request.args.get('user_id')
+        achievements = Achievement.query.filter_by(user_id=user_id).all()
+        return jsonify([{
+            'id': achievement.id,
+            'title': achievement.title,
+            'date': achievement.date.strftime('%Y-%m-%d')
+        } for achievement in achievements])
+
+if __name__ == '__main__':
+    db.create_all()
+    app.run(debug=True)
